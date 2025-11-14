@@ -540,7 +540,6 @@
                     <li><a href="#categories">分类</a></li>
                     <li><a href="#tags">标签</a></li>
                     <li><a href="#about">关于</a></li>
-                    <!-- 已去掉“瞬间”以及友链 -->
                 </ul>
             </nav>
 
@@ -611,7 +610,7 @@
                         </ul>
                     </div>
                 </article>
-            </div>
+                </div>
 
             <!-- 中间列：最新文章卡片列表 -->
             <div class="col-center" id="archive">
@@ -627,8 +626,6 @@
                         </div>
                         <div class="post-meta">
                             <span>📅 2025-09-01 00:00</span>
-                            <span>👁 0</span>
-                            <span>💬 0</span>
                             <span>📂 开发</span>
                         </div>
                     </div>
@@ -642,8 +639,6 @@
                         </div>
                         <div class="post-meta">
                             <span>📅 2025-08-01 00:00</span>
-                            <span>👁 0</span>
-                            <span>💬 0</span>
                             <span>📂 工具</span>
                         </div>
                     </div>
@@ -657,8 +652,6 @@
                         </div>
                         <div class="post-meta">
                             <span>📅 2025-07-01 00:00</span>
-                            <span>👁 0</span>
-                            <span>💬 0</span>
                             <span>📂 工作</span>
                         </div>
                     </div>
@@ -672,8 +665,6 @@
                         </div>
                         <div class="post-meta">
                             <span>📅 2025-06-01 00:00</span>
-                            <span>👁 0</span>
-                            <span>💬 0</span>
                             <span>📂 网络</span>
                         </div>
                     </div>
@@ -703,39 +694,20 @@
                         </div>
                         <ul class="post-list">
                             <li class="post-item">
-                                <span class="post-item-title">示例：A</span>
+                                <span class="post-item-title">示例文章标题 · A</span>
                                 <span class="post-actions">🔗</span>
                             </li>
                             <li class="post-item">
-                                <span class="post-item-title">示例：B</span>
+                                <span class="post-item-title">示例文章标题 · B</span>
                                 <span class="post-actions">🔗</span>
                             </li>
                             <li class="post-item">
-                                <span class="post-item-title">示例：C</span>
+                                <span class="post-item-title">示例文章标题 · C</span>
                                 <span class="post-actions">🔗</span>
                             </li>
                             <li class="post-item">
-                                <span class="post-item-title">示例：D</span>
+                                <span class="post-item-title">示例文章标题 · D</span>
                                 <span class="post-actions">🔗</span>
-                            </li>
-                        </ul>
-                    </div>
-                </article>
-
-                <!-- 最新评论 -->
-                <article class="card" style="margin-top: 1rem;" id="tags">
-                    <div class="card-inner">
-                        <div class="sidebar-title">
-                            <span>💬</span> 最新评论
-                        </div>
-                        <ul class="comment-list">
-                            <li class="comment-item">
-                                <span class="comment-text">这里是最新评论占位。</span>
-                                <span class="comment-actions">…</span>
-                            </li>
-                            <li class="comment-item">
-                                <span class="comment-text">正式接入后可显示真实评论内容。</span>
-                                <span class="comment-actions">…</span>
                             </li>
                         </ul>
                     </div>
@@ -849,6 +821,38 @@
 
         var particles = [];
 
+        // 画五角星的小工具函数
+        function drawStar(ctx, x, y, radius, rotation) {
+            var spikes = 5;                     // 五个角
+            var outerRadius = radius;           // 外圈半径
+            var innerRadius = radius / 2;       // 内圈半径（中间凹进去的地方）
+            var rot = (Math.PI / 2 * 3) + rotation * 0.1; // 初始旋转角度 + 让星星稍微转动
+            var step = Math.PI / spikes;        // 每一小步转多少角度
+
+            ctx.beginPath();
+            ctx.moveTo(x, y - outerRadius);
+
+            for (var i = 0; i < spikes; i++) {
+                // 外点
+                ctx.lineTo(
+                    x + Math.cos(rot) * outerRadius,
+                    y + Math.sin(rot) * outerRadius
+                );
+                rot += step;
+
+                // 内点
+                ctx.lineTo(
+                    x + Math.cos(rot) * innerRadius,
+                    y + Math.sin(rot) * innerRadius
+                );
+                rot += step;
+            }
+
+            ctx.closePath();
+            ctx.fill();
+        }
+
+
         function addParticles(x, y) {
             for (var i = 0; i < 6; i++) {
                 particles.push({
@@ -883,9 +887,7 @@
 
                 ctx.globalAlpha = alpha;
                 ctx.fillStyle = p.color;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fill();
+                drawStar(ctx, p.x, p.y, p.size, p.life);
             }
             ctx.globalAlpha = 1;
             requestAnimationFrame(tick);
